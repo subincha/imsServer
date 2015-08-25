@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Instant Messaging System</title>
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="assets/css/form-elements.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Favicon and touch icons -->
+        <link rel="shortcut icon" href="assets/ico/favicon.png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+
+		<style>
+		<!--#div_top_hypers{
+    background-color:#eeeeee;
+        display:inline;
+
+}
+#ul_top_hypers li
+{
+    display: inline-block;
+}-->
+#con { background:#f0f; }
+.float { float:left;margin:10px;width:500px;height:150px;box-shadow:2px 2px 5px 2px;background-color: white; }
+.modal-backdrop{z-index: 1000;}
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Content -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text">
+                            <div class="top-big-link">
+                            	<a class="btn btn-link-1 launch-modal" href="#" data-modal-id="modal-register">Search</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <!-- MODAL -->
+        <div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="modal-register-label" aria-hidden="true">
+        	<div class="modal-dialog">
+        		<div class="modal-content">
+        			
+        			<div class="modal-header">
+        				<button type="button" class="close" data-dismiss="modal">
+        					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        				</button>
+      
+		<input type="text" name="search" class="search" id="search" placeholder="Find people..." style="width:450px;">
+		<input type="button" name="btnsearch" value="Search" class="btn btn-primary" style="height:50px;" id="btnsearch">
+	</div>
+        			</div>
+        			
+        			<div class="modal-body">
+        				
+	                    <form role="form" action="" method="" class="registration-form">
+	                    	<div class="form-group" style="box-shadow:2px 2px 5px 2px;overflow:scroll;height:400px;">
+		<div id="con">
+            <div id="demo"></div>
+		
+        </div>
+	                        </div>
+        			</div>
+        			
+        		</div>
+        	</div>
+        </div>
+
+        <!-- Javascript -->
+        <script src="assets/js/jquery-1.11.1.min.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/js/jquery.backstretch.min.js"></script>
+        <script src="assets/js/scripts.js"></script>
+         <script src="/socket.io/socket.io.js"></script>    
+        <script src = "../js/search.js"></script>
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+    </body>
+
+</html>
