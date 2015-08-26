@@ -256,20 +256,22 @@ io.on('connection', function (socket) {
                 console.log("yeta notification ", noti);
                  Notification.updateFriendNotification(fid, username, id, function(err, notify) {
                      //console.log("update notification ", "notify");
+                    socket.emit('notification',{id:id, username: username, fid: fid, funame: funame});
                  });
             }  else {
                  Notification.addFriendNotification(fid, funame, username, id, function(err, notify) {
                      //console.log("add notification ", "notify");
+                    socket.emit('notification',{id:id, username: username, fid: fid, funame: funame});
                  });
             }
         
         });
     };
     
-    socket.on('notification', function(notify) {
+   /* socket.on('notification', function(notify) {
        socket.emit('friend request', {'username': notify.notification[0].friend[0].from, 'id': notify.notification[0].friend[0].fid,'funame' : notify.username, 'fid' : notify.id}); 
         console.log("notification from on ", notify);
-    });
+    });*/
     
      socket.on('friend accepted', function(data) {
          
@@ -277,9 +279,9 @@ io.on('connection', function (socket) {
             if(err) throw err;
               Friends.updateFriendStatus(data.fid, data.id, 'accepted', function(err, friend) {
                 if(err) throw err;
-                  Notification.findByIdAndRemove({_id:}, function(err, noti) {
+                  /*Notification.findByIdAndRemove({_id:}, function(err, noti) {
                       
-                  });
+                  });*/
              });
          });
      });

@@ -32,7 +32,8 @@ $(function() {
     
     setUsername();
     
-            $.ajax({
+    socket.on('notification', function(data) {
+                $.ajax({
                         type : 'GET',
                         url : '/api/getNotification/' + username
                 }).done(function(notify) {
@@ -55,22 +56,24 @@ $(function() {
                     }
                        
                 });
+    });
+            
     
     function addNotificationElement(receivedMessage,div,id,html){
-	var p= document.getElementById(receivedMessage);
-	var newElement=document.createElement(div);
-	newElement.setAttribute('id',id);
-	newElement.innerHTML=html;
-	p.appendChild(newElement);
+        var p= document.getElementById(receivedMessage);
+        var newElement=document.createElement(div);
+        newElement.setAttribute('id',id);
+        newElement.innerHTML=html;
+        p.appendChild(newElement);
         var notify = document.getElementById(id);
         notify.addEventListener('click', function() {
-            //Friend request accept or reject dialog box dekhaune
-            //accept vayo vane, socket.emit('friend accpepted'); friend database ma accepted garne
-            //reject vayo vane, socket.emit('friend rejected'); friend database bata pending wala ra requested wala lai delete garne
-            //tyalai notification bata hataune
-            //cancel vayo vane kei ni nagarne
-            
-            //delete garne lai id main ho so id lai pathaunu parcha
+                //Friend request accept or reject dialog box dekhaune
+                //accept vayo vane, socket.emit('friend accpepted'); friend database ma accepted garne
+                //reject vayo vane, socket.emit('friend rejected'); friend database bata pending wala ra requested wala lai delete garne
+                //tyalai notification bata hataune
+                //cancel vayo vane kei ni nagarne
+
+                //delete garne lai id main ho so id lai pathaunu parcha
         });
         
 }
