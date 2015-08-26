@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instant Messaging System</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+		<link rel="stylesheet" href="../assets/search/assets/css/form-elements.css">
+        <link rel="stylesheet" href="../assets/search/assets/css/style.css">
+		 
+  <!-- BOOTSTRAP CORE STYLE CSS -->
+    <link href="../assets/chatbox/css/bootstrap.css" rel="stylesheet" />
+    <link href="../assets/search/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- FONT AWESOME  CSS -->
+    <link href="../assets/chatbox/css/font-awesome.css" rel="stylesheet" />
+    <!-- CUSTOM STYLE CSS -->
+    <link href="../assets/chatbox/css/style.css" rel="stylesheet" />
+	<style>
+			#con { background:#fff; }
+			.float { float:left;margin:10px;width:200px;height:150px;}
+			.modal-backdrop{z-index:1000;}
+			.user{padding:20px;}
+			.user:hover {background: #f1f2f3; opacity:0.6;}
+			.active {background:#d2e8f8; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+			.UserProfile {width:350px;height:625px;float:left;background-color:#f0f8fa;background-image:url(../assets/img/bg-user.png);}
+			.ProfileCircle {border-radius:50% 50% 50% 50%;width:50px;height:50px;float:left;margin:5px;clear:both;border:2ps solid white;}
+			#SearchBtn {width:340px;height:50px;float:left;text-align:center;clear:both;margin-left:5px;}
+			.MenuTab{width:425px;height:50px;float:left;margin-left:-75px;padding:10px;border-bottom:1px solid gray;padding-left:100px;clear:both;}
+			#serverMessage{width:350px;height:50px;float:left;text-align:center;clear:both;border-bottom:1px solid gray;padding-top:15px;}
+			.FriendTab{width:350px;height:350px;float:left;overflow-y:scroll;overflow-x:hidden;}
+			.FriendProfile{border-radius:50% 50% 50% 50%;width:50px;height:50px;float:left;}
+			.break{border-bottom:1px solid gray;width:350px;}
+			#userLog{width:350px;height:50px;}
+			#userTap{visibility:hidden;width:900px;}
+			#profileTab{width:1010px;height:80px;position:fixed;margin-left:350px;}
+			.MessageProfile{border-radius:50% 50% 50% 50%;width:80px;height:80px;float:left;margin:5px;}
+			.icon{height:40px; width:40px;float:right;margin-right:20px;}
+			#searchId{visibility:hidden;background-color:#fff;box-shadow:2px 2px 5px 2px;}
+		</style>
+</head>
+<body>
+  <ul class="pages">
+    <li class="chat page">
+      <div class="chatArea">
+	  <div class="UserProfile">
+	  <div style="height:100px;width:350px;padding-top:20px;">
+			<img src="../assets/img/user.png" class="ProfileCircle">
+				<label id="lblUsername" name="username" style="margin-left:-100px;">username</label>
+				</br>
+				<label name="status" style="margin-left:-135px;">status</label>
+		</div>
+				<button class="btn btn-primary launch-modal" href="#" data-modal-id="modal-register" id="SearchBtn">Search</button>
+		<div class="MenuTab">
+            <a id ="friendNotification"><img src="../assets/img/icon/group-128.png" style="width:30px;height:30px;"></a>
+			<img src="../assets/img/icon/messages_256.png" style="width:30px;height:30px;margin-left:50px;">
+		</div>
+		<div id="serverMessage"></div>
+		<div class="FriendTab" id = "FriendTab">
+           
+          <div id = "user"></div>
+		<!--<div class="user" id="friend">
+				<img src="../assets/img/user.png" class="FriendProfile">
+							<label name="username" style="font-size:12pt;margin-left:-100px;">username</label>
+							</br>
+							<label style="margin-left:-115px;">status</label>
+		</div>
+		<div class="break"></div>
+		<div class="user" id="friend">
+				<img src="../assets/img/user.png" class="FriendProfile">
+							<label name="username" style="font-size:12pt;margin-left:-100px;">username</label>
+							</br>
+							<label style="margin-left:-115px;">status</label>
+		</div>
+		<div class="break"></div>-->
+		<div id="userLog"></div>
+		</div>
+	  </div>
+	  <div id="userTap">
+	  <div id="profileTab">
+		<img src="../assets/img/user.png" class="MessageProfile">
+				<ul style="padding-top:10px;">
+				<li id="activeFriend">username</li>
+					<li><a href="#"><img src="../assets/img/icon/add_group-128.png" class="icon"></a></li>
+					<li><a href="#"><img src="../assets/img/icon/Chat_Video.png" class="icon"></a></li>
+					<li><a href="#"><img src="../assets/img/icon/clip-128.png" class="icon"></a></li>
+				</ul>
+				<div style="border-bottom:1px solid #cccccc;padding:30px;"></div>
+		</div>
+		<div id="receivedMessage">
+		
+		</div>
+		<input class="inputMessage" placeholder="Type here..."/>
+	</div>	
+	</div>
+    </li>
+        <li class="login page">
+      <div class="form">
+        <h3 class="title">What's your nickname?</h3>
+        <input class="usernameInput" type="text"  value="<%= users%>" maxlength="14" />
+      </div>
+    </li>
+	 </ul>
+	<!-- MODAL -->
+        <div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="modal-register-label" aria-hidden="true">
+        	<div class="modal-dialog">
+        		<div class="modal-content">
+        			
+        			<div class="modal-header">
+        				<button type="button" class="close" data-dismiss="modal">
+        					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        				</button>
+      
+		<input type="text" class="search" placeholder="Find people..." style="width:450px;">
+		<input type="button" name="btnsearch" value="Search" class="btn btn-primary" style="height:50px;" id="btnsearch" onclick="opnPanel()">
+		</div>
+        	</div>
+        		<div class="modal-body" id="searchId">
+                    <div class="form-group" style="overflow-y:scroll;overflow-x:hidden;margin-left:5px;height:auto;width:500px;margin-left:40px;">
+                            <div id="con">
+                                    <div id="demo"></div>
+
+                                </div>
+	                       </div>
+        			<!--<form role="form" action="" method="" class="registration-form">
+	                     
+				</form>-->
+        	</div>
+        </div>
+		</div>
+ 
+  
+ 
+  
+   <!-- Javascript -->
+      <script src="../assets/bootstrap/js/jquery-1.11.3.min.js"></script>
+        <script src="../assets/search/assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="../assets/search/assets/js/jquery.backstretch.min.js"></script>
+  
+        <script src="../assets/search/assets/js/scripts.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="../js/main.js"></script>
+ <script src = "../js/search.js"></script>
+  <script>
+  /*$(function(){
+
+
+jQuery('.user').click(function(){
+document.getElementById('userTap').style.visibility="visible";
+  jQuery('.user').removeClass('active');
+  jQuery(this).addClass('active');
+});
+
+});
+	var chngWin=function(){
+		document.getElementById('userTap').style.visibility="visible";
+	}*/
+	var opnPanel=function(){
+				document.getElementById('searchId').style.visibility="visible";
+			}
+			var objDiv = document.getElementById('receivedMessage');
+objDiv.scrollTop = objDiv.scrollHeight;
+  </script>
+</body>
+</html>

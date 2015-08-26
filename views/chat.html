@@ -5,11 +5,11 @@
   <title>Instant Messaging System</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-  <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/bootstrap/bootstrap.min.css">
 		<link rel="stylesheet" href="../assets/search/assets/css/form-elements.css">
         <link rel="stylesheet" href="../assets/search/assets/css/style.css">
         <link rel="stylesheet" href="../assets/css/chatBubble.css">
-		 <script src="../assets/bootstrap/js/jquery-1.11.3.min.js"></script>
+		 <script src="../assets/bootstrap/jquery-1.11.3.min.js"></script>
 		 <link href="//code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet" type="text/css" />
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="../assets/css/AdminLTE.css">	 
@@ -84,32 +84,17 @@
             <li><a id="messageLink"><img src="../assets/img/icon/messages_256.png" style="width:30px;height:30px;">
 			<span class="messageCount label label-success" id="notifyTop">3</span>
 			</a></li>
-			<li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"  id="notificationCount"><img src="../assets/img/icon/group-128.png" style="width:30px;height:30px;">
-                </a>
-                <ul class="dropdown-menu" role="menu" id="notification">
-                <!--<li id="test"></li>-->
-                
-                    <!--Dynamic Notification Contents-->
-              </ul>
-            </li>
+			<li><a href="#"><img src="../assets/img/icon/group-128.png" style="width:30px;height:30px;"></a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a class="launch-modal" data-modal-id="modal-notification" href="#">Action</a></li>
+                <li><a href="#">Action</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Nav header</li>
                 <li><a href="#">Separated link</a></li>
-                <li id="logout"><a href="#">Log Out</a></li>
+                <li><a href="#">Log Out</a></li>
               </ul>
             </li>
-              </li>
-        <li class="login page">
-      <div class="form">
-        <h3 class="title">What's your nickname?</h3>
-        <input class="usernameInput" type="text"  value="<%= users%>" maxlength="14" />
-      </div>
-    </li>
           </ul>
           </div>
           </div>
@@ -117,14 +102,14 @@
         <div class="navbar-header">
         <ul>
         	<li><img src="../assets/img/user.png" style="border-radius:50% 50% 50% 50%;width:50px;height:50px;margin-left:900px;"</li>
-        	<li style="color:black;float:right;margin-top:-45px;margin-right:60px;"><h4><%=users%></h4></li>
+        	<li style="color:white;float:right;margin-top:-45px;margin-right:60px;"><h4>username</h4></li>
         </ul>
         </div>
         </div>
 	  <div id="userTap">
 	  <div id="profileTab">
 		<img src="../assets/img/user.png" class="MessageProfile" alt="username">
-		<h4><p style="text-align:center;margin-left:-110px;margin-top:120px;color:white;" id="activeFriend">username</p></h4>
+		<h4><p style="text-align:center;margin-left:-110px;margin-top:120px;color:white;">username</p></h4>
 		</div>
 		<div id="receivedMessage">
 		
@@ -149,76 +134,88 @@
         					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
         				</button>
       
-		<input type="text" class="search" placeholder="Find people..." style="width:450px;">
+		<input type="text" name="search" placeholder="Find people..." style="width:450px;">
 		<input type="button" name="btnsearch" value="Search" class="btn btn-primary" style="height:50px;" id="btnsearch" onclick="opnPanel()">
 		</div>
         	</div>
         		<div class="modal-body" id="searchId">
-                    <div class="form-group" style="overflow-y:scroll;overflow-x:hidden;margin-left:5px;height:auto;width:500px;margin-left:40px;">
-                            <div id="con">
-                                    <div id="demo"></div>
-
-                                </div>
-	                       </div>
         			<form role="form" action="" method="" class="registration-form">
-	                     
+	                <div class="row">
+					<div class="col-xs-12">
+						<div class="col-xs-6">
+								<div class="col-xs-12">
+								<div class="row">
+									<div class="col-xs-5">
+										<img src="../assets/search/assets/img/avatar/male.jpg"/>
+									</div>
+									 <div class="col-xs-7">
+										<ul>
+											<li name="username">username</li>
+											<li name="email">email</li>
+										</ul>
+									</div>
+								<div class="row">
+								<a class="btn btn-link-1 btn-block" href="#">Add Friend</a>
+								</div>
+						</div>
+					</div>
+					<div class="col-xs-12">
+						<div class="col-xs-6">
+								<div class="col-xs-12">
+								<div class="row">
+									<div class="col-xs-5">
+										<img src="../assets/search/assets/img/avatar/male.jpg"/>
+									</div>
+									 <div class="col-xs-7">
+										<ul>
+											<li name="username">username</li>
+											<li name="email">email</li>
+										</ul>
+									</div>
+									</div>
+									<div class="row">
+								<a class="btn btn-link-1 btn-block" href="#">Add Friend</a>
+								</div>
+								</div>
+						</div>
+					</div>
+				</div>
+					</div>
+	            </div>
 				</form>
         	</div>
         </div>
 		</div>
-
- <div class="modal fade" id="modal-notification" tabindex="-1" role="dialog" aria-labelledby="modal-register-label" aria-hidden="true">
-     <div class="modal-dialog">
-            <div class="modal-content">
-        			
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">
-        				<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                    </button>
-      
-                    <label type="text" class="search" style="width:450px;" id="friendRequestLabel">Friend Request From Subin</label></br>
-                        <input type="button" id="btnfriendaccept" value="Accept" class="btn btn-primary" style="height:40px;">
-                        <input type="button" id="btnfriendreject" value="Reject" class="btn btn-primary" style="height:40px;">
-		      </div>
-        	</div>
-        		
-    </div>
-</div>
  
   
  
-  <!-- Javascript -->
-        <script src="../assets/bootstrap/js/jquery-1.11.3.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/main.js"></script>
+   <!-- Javascript -->
         <script src="../assets/search/assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="../assets/search/assets/js/jquery.backstretch.min.js"></script>
-  
         <script src="../assets/search/assets/js/scripts.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="../js/main.js"></script>
-        <script src = "../js/search.js"></script>  <script>
-  $(function(){
+  <script>
+  /*$(function(){
 
 
-var html='<a class="launch-modal" data-modal-id="modal-notification" href="#">Action</a>';
-       addNotificationElement('notification', 'li', 'notify'+10, html);
+jQuery('.user').click(function(){
+document.getElementById('userTap').style.visibility="visible";
+  jQuery('.user').removeClass('active');
+  jQuery(this).addClass('active');
+	$('#notify').fadeOut("slow");
+	$('#notifyTop').fadeOut("slow");
 });
 
-	function addNotificationElement(receivedMessage,div,id,html){
-        var p= document.getElementById(receivedMessage);
-        var newElement=document.createElement(div);
-        newElement.setAttribute('id',id);
-        newElement.innerHTML=html;
-        p.appendChild(newElement);
-        
-    }
+$("#receivedMessage").animate({ scrollTop: $(document).height() }, "fast");
+});
+
+	
 
 	var chngWin=function(){
 		document.getElementById('userTap').style.visibility="visible";
 		document.getElementById('notify').style.visibility="hidden";
-	}
-document.getElementById("logout").onclick = function () {
-        location.href = "/logout";
-    };
+	}*/
 	var opnPanel=function(){
 				document.getElementById('searchId').style.visibility="visible";
 			}

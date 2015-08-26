@@ -2,25 +2,20 @@ var db = require('../libs/db');
 var NotificationSchema = new db.Schema({
     id : String,
     username : {type: String, unique: true},
-    notification: [{
+    notification: {
         friend : [{
             from: String,
             fid: String
-        }],
-        message : [{
-            from: String,
-            to: String,
-            msg : String
         }]
-    }]
+    }
 })
 var Notification = db.mongoose.model('Notification', NotificationSchema);
 // Exports
 module.exports = Notification;
 module.exports.addFriendNotification = addFriendNotification;
-module.exports.addMessageNotification = addMessageNotification;
+//module.exports.addMessageNotification = addMessageNotification;
 module.exports.updateFriendNotification = updateFriendNotification;
-module.exports.updateMessageNotification = updateMessageNotification;
+//module.exports.updateMessageNotification = updateMessageNotification;
 // Add userLog to database
 function addFriendNotification(id, username, from, fid, callback) {
     var instance = new Notification({
@@ -43,6 +38,7 @@ function addFriendNotification(id, username, from, fid, callback) {
     });
 };
 
+/*
 function addMessageNotification(id, username, notify, from, to, msg, callback) {
     var instance = new Notification({
         id : id,
@@ -60,6 +56,7 @@ function addMessageNotification(id, username, notify, from, to, msg, callback) {
         }
     });
 };
+*/
 
     
 function updateFriendNotification(id, from, fid, callback) {
@@ -78,7 +75,7 @@ function updateFriendNotification(id, from, fid, callback) {
         });
 };
 
-function updateMessageNotification(id, notify, callback) {
+/*function updateMessageNotification(id, notify, callback) {
      Notification.findOneAndUpdate(
         {id: id},
         {$push: {"notification": {"message" : notify}}},
@@ -92,4 +89,4 @@ function updateMessageNotification(id, notify, callback) {
             }
 
         });
-};
+};*/

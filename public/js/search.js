@@ -87,7 +87,7 @@
             function myfunction(addFriend, found) {
 				if(addFriend !== null) {
 					addFriend.addEventListener('click', function() {
-                    alert(found._id);
+                    alert(found.username);
                     $(addFriend).attr('disabled', true);
                     $(addFriend).val('Friend Request Sent');
                     socket.emit('add friend', {user : found, sessionUser : sessionUser});

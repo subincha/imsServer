@@ -15,11 +15,13 @@ $(function() {
   var $loginPage = $('.login.page'); // The login page
   var $chatPage = $('.chat.page'); // The chatroom page
     
-  var friendrequest = document.getElementById('friendrequest');
+  var friendrequest = document.getElementById('friendNotification');
+  var friendTab = document.getElementById('FriendTab');
  // var addfriend = document.getElementById('addfriend');
 
   // Prompt for setting a username
   var username;
+    var activeFriend;
   var connected = false;
   var typing = false;
   var lastTypingTime;
@@ -30,20 +32,135 @@ $(function() {
     
     setUsername();
     
-     $.ajax({
+            $.ajax({
                         type : 'GET',
                         url : '/api/getNotification/' + username
                 }).done(function(notify) {
                     if(notify !== null) {
                          /* */
-                        socket.emit('notification', notify);
-                        alert("notification" + notify.username);
+                        //socket.emit('notification', notify);
+                        //alert("notification" + notify.username);
+                         var html = '<span class="messageCount label label-success" id="notifyTopFriend">'+notify.notification.friend.length+'</span>';
+                        addElement('notificationCount', 'span', 'notifyTopFriend', html);
+                        var html = ' <li class="dropdown-header">Friend Reqest(s) From</li>';
+                        addElement('notification', 'li', 'notify', html);
+                       for(var i=0; i<notify.notification.friend.length; i++) {
+                             var html = '<a class="launch-modal" data-modal-id="modal-notification" href="#">'+notify.notification.friend[i].from+'</a>';
+                            addNotificationElement('notification', 'li', 'notify'+i, html);
+                        }
+                       
+                    } else {
+                        var html = ' <li class="dropdown-header">No New Notifications</li>';
+                        addElement('notification', 'li', 'notify', html);
                     }
                        
                 });
     
+    function addNotificationElement(receivedMessage,div,id,html){
+	var p= document.getElementById(receivedMessage);
+	var newElement=document.createElement(div);
+	newElement.setAttribute('id',id);
+	newElement.innerHTML=html;
+	p.appendChild(newElement);
+        var notify = document.getElementById(id);
+        notify.addEventListener('click', function() {
+            //Friend request accept or reject dialog box dekhaune
+            //accept vayo vane, socket.emit('friend accpepted'); friend database ma accepted garne
+            //reject vayo vane, socket.emit('friend rejected'); friend database bata pending wala ra requested wala lai delete garne
+            //tyalai notification bata hataune
+            //cancel vayo vane kei ni nagarne
+            
+            //delete garne lai id main ho so id lai pathaunu parcha
+        });
+        
+}
+       
+    
+    getFriends();
+    function getFriends() {
+         var friendsAccepted = [];
+                $.ajax({
+                        type : 'GET',
+                        url : '/api/getFriend/' + username
+                }).done(function(friends) {
+                    if(friends !== null) {
+                        for(var i = 0; i < friends.friend.length; i++) {
+                            if(friends.friend[i].status === "accepted") {
+                                
+                                addFriendListElement('user', 'div', 'friendid-' + i, friends.friend[i].username, i);
+                            }
+                        }
+                    }
+                       
+                });
+        
+                    
+    
+                   function addFriendListElement(parentId, elementTag, elementId, user, i) {
+                        $.ajax({
+                        type : 'GET',
+                        url : '/api/getUserLog/' + user
+                        }).done(function(friendstatus) {
+                            if(friendstatus !==null) {
+                            // Adds an element to the document
+                                var p = document.getElementById(parentId);
+                                var newElement = document.createElement(elementTag);
+                                newElement.setAttribute('id', elementId);
+                                if(friendstatus.status === "online"){
+                                    var html = '<div class="user" id="friend'+i+'"><img src="../assets/img/user.png" class="FriendProfile">'+
+                                        '<label id="'+user+'" style="font-size:12pt;margin-left:-50px;">'+user+'</label>'+
+                                        '<small class="badge pull-right bg-green" id="notify'+i+'">3</small>'+
+                                        '</br>'+
+                                        '<img src="../assets/img/online.png" id="'+user+'Status" style="margin-left:-230px;height:20px;width:20px;"></div>'+
+                                        '<div class="break"></div>';
+                                } else {
+                                    var html = '<div class="user" id="friend'+i+'"><img src="../assets/img/user.png" class="FriendProfile">'+
+                                        '<label id="'+user+'" style="font-size:12pt;margin-left:-50px;">'+user+'</label>'+
+                                        '<small class="badge pull-right bg-green" id="notify'+i+'">3</small>'+
+                                        '</br>'+
+                                        '<img src="../assets/img/offline.png" id="'+user+'Status" style="margin-left:-230px;height:20px;width:20px;"></div>'+
+                                        '<div class="break"></div>';
+                                }
+                                
+                                newElement.innerHTML = html;
+                                p.appendChild(newElement);
+                                var myFriend = document.getElementById('friend'+i);
+                                        myFriend.addEventListener('click', function() {
+                                            document.getElementById('userTap').style.visibility="visible";
+                                            //document.getElementById('userTap').style.visibility="visible";
+                                            jQuery('.user').removeClass('active');
+                                            jQuery(this).addClass('active');
+                                            $('#notify'+i).fadeOut("slow");
+	                                       $('#notifyTop').fadeOut("slow");
+                                            activeFriend = user;
+                                            $('#activeFriend').html(activeFriend);
+                                             $.ajax({
+                                                type : 'GET',
+                                                url : '/api/getMessage/' + activeFriend + '/' + username
+                                                }).done(function(messages) {
+                                                    if(messages !== null) {
+                                                        $('#receivedMessage div').empty();
+                                                        for(var i=0; i < messages.length; i++) {
+                                                            if(messages[i].from === username) {
+                                                             var html='<ul class="messages triangle-border left" id="messageId" style="margin-top:20px;text-align:left;width:600px;"><li>'+ messages[i].message +'</li></ul><img src="../assets/img/user.png" style="float:left;width:50px;height:50px;margin-top:-50px;">'
+                                                             } else {
+                                                             var html='<ul class="messages triangle-border right" id="messageId" style="margin-top:20px;text-align:left;width:600px;margin-left:330px;"><li>'+ messages[i].message +'</li></ul><img src="../assets/img/user.png" style="float:right;width:50px;height:50px;margin-top:-50px;">'
+                                                             }
+                                                             addElement('receivedMessage','div','id',html);
+                                                        }
+                                                    } else {
+                                                        $('#receivedMessage div').empty();
+                                                    }
+                                             });
+                                });
+                            }
+                        });
+                    }
+    
+    }
+           
   
-    /*addfriend.addEventListener('click', function() {
+   /* addfriend.addEventListener('click', function() {
         //alert('Hello world');
        // socket.emit('add friend', {username :'xyz'}); 
         window.location.href='search.html';
@@ -53,11 +170,9 @@ $(function() {
        log('message ' + data.funame);
         friendrequest.style.visibility="visible";
         friendrequest.addEventListener('click', function() {
-        //alert('Friend request sent by ' + data.username);
-       // socket.emit('add friend', {username :'xyz'}); 
+            //loopthrough number of friend requests
         socket.emit('friend accepted', {'username' : data.username, 'id': data.id,'funame' : data.funame, 'fid' : data.fid});
             alert('Friend request sent by ' + data.username + ' is accepted');
-            friendrequest.style.visibility="hidden";
     }, false);
     });
     
@@ -67,7 +182,7 @@ $(function() {
     if (data.numUsers === 1) {
       message += "chat(0)";
     } else {
-      message +="chat("+ data.numUsers +")";
+      message +="chat("+ (data.numUsers-1) +")";
     }
    // log(message);
    $(serverMessage).html('<p>'+ message +'</p>');
@@ -104,9 +219,12 @@ $(function() {
       // tell server to execute 'new message' and send along one parameter
       //socket.emit('new message', message);
 	  var chatSend=document.getElementById('receivedMessage');
-	  var html='<ul class="messages chat-box-left" style="margin-top:20px;background-color:#ebecee;text-align:left;"><li>'+ message +'</li></ul><div class="chat-box-name-left"><img src="../assets/img/user.png"></div>'
+	  var html='<ul class="messages triangle-border left" id="messageId" style="margin-top:20px;text-align:left;width:600px;"><li>'+ message +'</li></ul><img src="../assets/img/user.png" style="float:left;width:50px;height:50px;margin-top:-50px;">'
 	  addElement('receivedMessage','div','id',html);
-      socket.emit('new message', {username: "subin", message: message});
+        if(activeFriend !== '') {
+            socket.emit('new message', {username: activeFriend, message: message});
+        }
+      
     }
   }
   
@@ -289,7 +407,7 @@ $(function() {
   // Whenever the server emits 'new message', update the chat body
   socket.on('new message', function (data) {
    // addChatMessage(data);
-    var html='<ul class="messages chat-box-right" style="margin-top:20px;text-align:right;background-color:#e5edf7;"><li>'+ data.message +'</li></ul><div class="chat-box-name-right"><img src="../assets/img/user.png"></div>'
+    var html='<ul class="messages triangle-border right" id="messageId" style="margin-top:20px;text-align:left;width:600px;margin-left:330px;"><li>'+ data.message +'</li></ul><img src="../assets/img/user.png" style="float:right;width:50px;height:50px;margin-top:-50px;">'
 	  addElement('receivedMessage','div','id',html);
   });
 
@@ -297,7 +415,11 @@ $(function() {
   socket.on('user joined', function (data) {
     //log(data.username + ' joined');
     addParticipantsMessage(data);
-	 $(userLog).html('<p>'+ data.username +' is online</p>');	 //changes
+      if(data.username !== username) {
+          document.getElementById(data.username +'Status').src="../assets/img/online.png";//html('<img src="../assets/img/online.png" id="'+data.username+'Status" style="margin-left:-230px;height:20px;width:20px;">');
+	       $(userLog).html('<p>'+ data.username +' is online</p>');	 //changes
+      }
+       
   });
 
   // Whenever the server emits 'user left', log it in the chat body
@@ -305,6 +427,7 @@ $(function() {
     //log(data.username + ' left');
     addParticipantsMessage(data);
     removeChatTyping(data);
+      document.getElementById(data.username +'Status').src="../assets/img/offline.png";//html('<img src="../assets/img/online.png" id="'+data.username+'Status" style="margin-left:-230px;height:20px;width:20px;">');
 	 $(userLog).html('<p>'+ data.username +' is offline</p>');
   });
 

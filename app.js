@@ -34,7 +34,13 @@ app.use(session({
 }));
 //app.get('/login', routes.getLogin);
 app.get('/', function(req, res) {
-    res.render('index');
+        if(req.session && req.session.user) {
+            res.render('chat', {users: req.session.user.username});
+
+        } else {
+         res.render('index');
+    }
+   
 });
 
 app.get('/login', function(req, res) {
@@ -122,21 +128,43 @@ io.on('connection', function (socket) {
   // when the client emits 'add user', this listens and executes
   socket.on('add user', function (username) {
     // we store the username in the socket session for this client
-    socket.join(username);
-    console.log("add user : " + username);
-    socket.username = username;
-    // add the client's username to the global list
-    usernames[username] = username;
-    ++numUsers;
-    addedUser = true;
-    socket.emit('login', {
-      numUsers: numUsers
-    });
-    // echo globally (all clients) that a person has connected
-    socket.broadcast.emit('user joined', {
-      username: socket.username,
-      numUsers: numUsers
-    });
+    
+    if(usernames[username] !== username) {
+        socket.join(username);
+        console.log("add user : " + username);
+        User.findOne({username : username}, function(err, user) {
+             UserLog.findOneAndUpdate(
+                                {id: user.id},
+                                {$set: {"status": "online"}},
+                                {safe: true, upsert: true, new : true},
+                                function(err, model) {
+                                    console.log("online err " + err);
+
+                                }   
+                                );
+
+        });
+        socket.username = username;
+        // add the client's username to the global list
+        usernames[username] = username;
+        ++numUsers;
+        addedUser = true;
+        socket.emit('login', {
+          numUsers: numUsers
+        });
+        // echo globally (all clients) that a person has connected
+        socket.broadcast.emit('user joined', {
+          username: socket.username,
+          numUsers: numUsers
+        });
+    } else {
+        // echo globally (all clients) that a person has connected
+        socket.broadcast.emit('user joined', {
+          username: username,
+          numUsers: numUsers
+        });
+    }
+    
   });
     
     socket.on('add friend', function(data) {
@@ -148,55 +176,94 @@ io.on('connection', function (socket) {
         Friends.findOne({id : id}, function(err, friend) {
             if(err) throw err;
             if(friend !== null) {
-               Friends.updateFriends(id, fid, funame, 'pending', function(err, friend) {
+               Friends.updateFriends(id, fid, funame, 'pending', function(err, fri) {
                    if(err) throw err; 
-                   Friends.updateFriends(fid, id, username, 'requested', function(err, friend) {
-                       if(err) throw err; 
-                       if(friend.status === "online") {
-                                   socket.broadcast.to(funame).emit('friend request', {'username': username, 'id': id,'funame' : funame, 'fid' : fid}); 
-                              } else {
-                                    writeNotification(fid, funame, username, id); 
-                       console.log('fid ' +fid);
-                              }
-                   });
+                   console.log("afno friends ma update " + fri);
+                   Friends.findOne({id : fid}, function(err, myfriend) {
+                       if(err) throw err;
+                       if(myfriend !== null) {
+                                Friends.updateFriends(fid, id, username, 'requested', function(err, friend) {
+                                   if(err) 
+                                   {
+                                        console.log("friends ko ma update ");
+                                        console.log("friends ko ma update id " + fid);
+                                        console.log("friends ko ma update fid" +  id);
+                                        console.log("friends ko ma update funame" +  username);
+                                   } else {
+                                        if(friend !== null) {
+                                             if(friend.status === "online") {
+                                                   socket.broadcast.to(funame).emit('friend request', {'username': username, 'id': id,'funame' : funame, 'fid' : fid}); 
+                                              } else {
+                                                    writeNotification(fid, funame, username, id); 
+                                                    console.log('update1 friend added ' +funame);
+                                              }
+                                        } else {
+                                             writeNotification(fid, funame, username, id); 
+                                            console.log('update2 friend added ' +funame);
+                                        }
+                                   }
+                            });
+                       } else {
+                           addFriend(fid, funame, id, username);
+                       }
+                   })
                    
                 });
             } else {
                  Friends.addFriends(id, username, fid, funame, 'pending', function(err, friend) {
                     if(err) throw err;
-                      Friends.addFriends(fid, funame, id, username, 'requested', function(err, friend) {
-                        if(err) throw err;
-                          console.log('funame ' + funame);
-                          UserLog.findOne({username : funame}, function(err, friend){  
-                              if(err) throw err;
-                              console.log('friend status ' + friend);
-                              if(friend.status === "online") {
-                                  socket.broadcast.to(funame).emit('friend request', {'username': username, 'id': id,'funame' : funame, 'fid' : fid});
-                                  
-                              } else {
-                                   writeNotification(fid, funame, username, id); 
-                                
-                              }
-                              
-                          });
-                          
-            console.log('friend added ' +funame);
-                      });
+                      addFriend(fid, funame, id, username);
            
          });
             }
         });
     });
     
+    function addFriend(fid, funame, id, username) {
+        Friends.addFriends(fid, funame, id, username, 'requested', function(err, friend) {
+                        if(err) throw err;
+                          console.log('funame ' + funame);
+                          UserLog.findOne({username : funame}, function(err, friend){  
+                              if(err) throw err;
+                              console.log('friend status ' + friend);
+                             if(friend !== null) {
+                                  if(friend.status === "online") {
+                                  socket.broadcast.to(funame).emit('add1 friend request', {'username': username, 'id': id,'funame' : funame, 'fid' : fid});
+                                  
+                                    } else {
+                                   writeNotification(fid, funame, username, id); 
+                                
+                                    }
+                             }  else {
+                                     writeNotification(fid, funame, username, id); 
+                                    console.log('add2 friend added ' +funame);
+                                }
+                              
+                          });
+                          
+            console.log('friend added ' +funame);
+                      });
+    }
+    
     function writeNotification(fid, funame, username, id) {
         Notification.findOne({username : funame}, function (err, noti) {
+            
+            console.log("fid ", fid);
+            console.log("funame ", funame);
+            console.log("username ", username);
+            console.log("id ", id);
             if(noti !== null) {
-                 Notification.updateFriendNotification(fid, username, id, function(err, notify) {});
+                console.log("yeta notification ", noti);
+                 Notification.updateFriendNotification(fid, username, id, function(err, notify) {
+                     //console.log("update notification ", "notify");
+                 });
             }  else {
-                 Notification.addFriendNotification(fid, funame, username, id, function(err, notify) {});
+                 Notification.addFriendNotification(fid, funame, username, id, function(err, notify) {
+                     //console.log("add notification ", "notify");
+                 });
             }
         
-    });
+        });
     };
     
     socket.on('notification', function(notify) {
@@ -210,6 +277,9 @@ io.on('connection', function (socket) {
             if(err) throw err;
               Friends.updateFriendStatus(data.fid, data.id, 'accepted', function(err, friend) {
                 if(err) throw err;
+                  Notification.findByIdAndRemove({_id:}, function(err, noti) {
+                      
+                  });
              });
          });
      });
@@ -235,7 +305,19 @@ io.on('connection', function (socket) {
     if (addedUser) {
       delete usernames[socket.username];
       --numUsers;
+        User.findOne({username : socket.username}, function(err, user) {
+             UserLog.findOneAndUpdate(
+                                {id: user.id},
+                                {$set: {"status": "offline"}},
+                                {safe: true, upsert: true, new : true},
+                                function(err, model) {
+                                    console.log("offline err " +err);
 
+                                }   
+                                );
+
+        });
+         
       // echo globally that this client has left
       socket.broadcast.emit('user left', {
         username: socket.username,
